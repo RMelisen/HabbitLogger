@@ -20,9 +20,19 @@ namespace HabbitLogger.UI
         {
             MainMenuOption mainMenuChoice = AnsiConsole.Prompt(new SelectionPrompt<MainMenuOption>().Title($"What do you want to do ?").AddChoices(Enum.GetValues<MainMenuOption>()));
 
+            switch (mainMenuChoice)
+            {
+                case MainMenuOption.Insert:
+                    break;
+                case MainMenuOption.Delete:
+                    break;
+                case MainMenuOption.Update:
+                    break;
+                case MainMenuOption.View:
+                    break;
+                case MainMenuOption.Quit: 
+                    break;
+            }
         }
-
-
-
     }
 }
