@@ -7,7 +7,9 @@ namespace HabbitLogger.UI
     {
         #region CONST
 
-        private static readonly Color NEUTRAL_INDICATOR_COLOR = Color.Blue;
+        public static readonly Color NEUTRAL_INDICATOR_COLOR = Color.Blue;
+        public static readonly Color NEGATIVE_INDICATOR_COLOR = Color.Red;
+        public static readonly Color POSITIVE_INDICATOR_COLOR = Color.Green;
 
         #endregion
 
