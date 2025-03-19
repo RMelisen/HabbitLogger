@@ -67,5 +67,10 @@ namespace HabbitLogger.Commons.Classes
             Description = description;
             UnitOfMeasure = DAL.HabbitloggerDAL.GetUnitOfMeasureByID(unitOfMeasureId);
         }
+
+        public override string ToString()
+        {
+            return Description;
+        }
     }
 }

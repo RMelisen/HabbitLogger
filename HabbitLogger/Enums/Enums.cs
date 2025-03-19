@@ -18,7 +18,8 @@ namespace HabbitLogger.Enums
         [Description("Unit of measures")]
         UnitOfMeasures,
         [Description("Habbit occurences")]
-        HabbitOccurences
+        HabbitOccurences,
+        Back
     }
 
     internal static class EnumUtils

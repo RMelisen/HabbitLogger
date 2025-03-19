@@ -2,6 +2,7 @@
 using Spectre.Console;
 using HabbitLogger.Commons.Classes;
 using HabbitLogger.DAL;
+using System.Globalization;
 
 namespace HabbitLogger.UI
 {
@@ -24,8 +25,6 @@ namespace HabbitLogger.UI
         {
             bool shouldLoopMainMenu = true;
             MainMenuOption mainMenuChoice;
-            ViewTablesOption viewTablesOptionChoice;
-            string viewTablesOptionChoiceString;
 
             while (shouldLoopMainMenu)
             {
@@ -34,29 +33,38 @@ namespace HabbitLogger.UI
                 switch (mainMenuChoice)
                 {
                     case MainMenuOption.Insert:
+                        switch (SelectTable())
+                        {
+                            case ViewTablesOption.Habbits:
+                                InsertHabbit();
+                                break;
+                            case ViewTablesOption.UnitOfMeasures:
+                                InsertUnitOfMeasure();
+                                break;
+                            case ViewTablesOption.HabbitOccurences:
+                                InsertHabbitOccurence();
+                                break;
+                            case ViewTablesOption.Back:
+                                break;
+                        }
                         break;
                     case MainMenuOption.Delete:
+                        switch (SelectTable())
+                        {
+                            case ViewTablesOption.Habbits:
+                                break;
+                            case ViewTablesOption.UnitOfMeasures:
+                                break;
+                            case ViewTablesOption.HabbitOccurences:
+                                break;
+                            case ViewTablesOption.Back:
+                                break;
+                        }
                         break;
                     case MainMenuOption.Update:
                         break;
                     case MainMenuOption.View:
-                        //  Retrieves all enum values, casts them to Enum, gets their descriptions, and converts them to an array of strings.
-                        var options = Enum.GetValues(typeof(ViewTablesOption))
-                            .Cast<ViewTablesOption>()
-                            .Select(e => e.GetDescription())
-                            .ToArray();
-
-                        // Use the string[] to display the description attribute of the enum
-                        // I do this because I want to use the description instead of the raw value in my Spectre.Console.Prompt()
-                        AnsiConsole.Clear();
-                        viewTablesOptionChoiceString = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"What do you want to [{NEUTRAL_INDICATOR_COLOR}]view[/] ?").AddChoices(options));
-
-                        // Convert the chosen option back to an enum value
-                        viewTablesOptionChoice = Enum.GetValues(typeof(ViewTablesOption))
-                            .Cast<ViewTablesOption>()
-                            .FirstOrDefault(e => e.GetDescription() == viewTablesOptionChoiceString);
-
-                        switch (viewTablesOptionChoice)
+                        switch (SelectTable())
                         {
                             case ViewTablesOption.Habbits:
                                 ViewHabbits();
@@ -66,6 +74,8 @@ namespace HabbitLogger.UI
                                 break;
                             case ViewTablesOption.HabbitOccurences:
                                 ViewHabbitOccurences();
+                                break;
+                            case ViewTablesOption.Back:
                                 break;
                         }
                         break;
@@ -77,6 +87,8 @@ namespace HabbitLogger.UI
             }
             AnsiConsole.MarkupLine($"[Bold]See you soon ![/]");
         }
+
+        #region View Tables
 
         private static void ViewHabbits()
         {
@@ -141,5 +153,92 @@ namespace HabbitLogger.UI
             AnsiConsole.MarkupLine($"Press any key to [{NEUTRAL_INDICATOR_COLOR}]continue[/]");
             Console.ReadKey();
         }
+
+        #endregion
+
+        #region Insert in Table
+
+        private static void InsertHabbit()
+        {
+            AnsiConsole.Clear();
+
+            string name = AnsiConsole.Ask<string>($"Enter an habbit [{NEUTRAL_INDICATOR_COLOR}]name[/] : ");
+            string description = AnsiConsole.Ask<string>($"Enter the habbit [{NEUTRAL_INDICATOR_COLOR}]description[/] : ");
+            UnitOfMeasure unitOfMeasure = AnsiConsole.Prompt(new SelectionPrompt<UnitOfMeasure>().Title($"Select a [{NEUTRAL_INDICATOR_COLOR}]unit of measure[/]").AddChoices(HabbitloggerDAL.GetAllUnitsOfMeasures()));
+
+            HabbitloggerDAL.InsertHabbit(name, description, unitOfMeasure.Id);
+        }
+
+        private static void InsertUnitOfMeasure()
+        {
+            AnsiConsole.Clear();
+
+            string name = AnsiConsole.Ask<string>($"Enter a [{NEUTRAL_INDICATOR_COLOR}]unit of measure[/] : ");
+
+            HabbitloggerDAL.InsertUnitOfMeasure(name);
+        }
+
+        private static void InsertHabbitOccurence()
+        {
+            AnsiConsole.Clear();
+
+            Habbit habbit = AnsiConsole.Prompt(new SelectionPrompt<Habbit>().Title($"Select a [{NEUTRAL_INDICATOR_COLOR}]habbit[/]").AddChoices(HabbitloggerDAL.GetAllHabbits()));
+            int unitAmount = AnsiConsole.Ask<int>($"Enter an [{NEUTRAL_INDICATOR_COLOR}]amount[/] of [{NEUTRAL_INDICATOR_COLOR}]{habbit.UnitOfMeasure.Name}[/] : ");
+            DateTime? datetime = GetDateFromUser();
+            while (datetime == null)
+            {
+                AnsiConsole.MarkupLine($"[{NEGATIVE_INDICATOR_COLOR}]Wrong format ![/]");
+                datetime = GetDateFromUser();
+            }
+
+            HabbitloggerDAL.InsertHabbitOccurence(habbit.Id, unitAmount, datetime);
+        }
+
+        #endregion
+
+        #region Utils
+
+        internal static ViewTablesOption SelectTable()
+        {
+            string viewTablesOptionChoiceString;
+
+            //  Retrieves all enum values, casts them to Enum, gets their descriptions, and converts them to an array of strings.
+            var options = Enum.GetValues(typeof(ViewTablesOption))
+                .Cast<ViewTablesOption>()
+                .Select(e => e.GetDescription())
+                .ToArray();
+
+            // Use the string[] to display the description attribute of the enum
+            // I do this because I want to use the description instead of the raw value in my Spectre.Console.Prompt()
+            AnsiConsole.Clear();
+            viewTablesOptionChoiceString = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"What do you want to [{NEUTRAL_INDICATOR_COLOR}]view[/] ?").AddChoices(options));
+
+            // Convert the chosen option back to an enum value
+            return Enum.GetValues(typeof(ViewTablesOption))
+                .Cast<ViewTablesOption>()
+                .FirstOrDefault(e => e.GetDescription() == viewTablesOptionChoiceString);
+        }
+
+        public static DateTime? GetDateFromUser()
+        {
+            string dateString = AnsiConsole.Prompt(new TextPrompt<string>($"Enter a [{NEUTRAL_INDICATOR_COLOR}]date and time[/] (yyyy-MM-dd HH:mm) [['t' for now]]: "));
+
+            string[] formats = {"yyyy-MM-dd HH:mm", "yyyyMMdd HH:mm", "yyyy-MM-dd", "yyyyMMdd" };
+            DateTime parsedDate;
+
+            if (dateString == "t" || dateString == "now" ||dateString == "n")
+                return DateTime.Now;
+
+            if (DateTime.TryParseExact(dateString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+            {
+                return parsedDate;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
     }
 }

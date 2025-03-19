@@ -63,14 +63,14 @@ namespace HabbitLogger.Commons.Classes
         public HabbitOccurence(int id, int habbitId, int unitAmount, string datetime)
         {
             Id = id;
-            Habbit = DAL.HabbitloggerDAL.GetHabbitByID(id);
+            Habbit = DAL.HabbitloggerDAL.GetHabbitByID(habbitId);
             UnitAmount = unitAmount;
             Datetime = DateTime.Parse(datetime);            
         }
         public HabbitOccurence(int id, int habbitId, int unitAmount, DateTime datetime)
         {
             Id = id;
-            Habbit = DAL.HabbitloggerDAL.GetHabbitByID(id);
+            Habbit = DAL.HabbitloggerDAL.GetHabbitByID(habbitId);
             UnitAmount = unitAmount;
             Datetime = datetime;
         }

@@ -72,8 +72,8 @@ namespace HabbitLogger.DAL
             InsertOrIgnoreUnitOfMeasure(3, "Minutes");
 
             // Add some habbits to the database
-            InsertOrIgnoreHabbit(1, "WATER_INTAKE", "Ammount of water drunk", 1);
-            InsertOrIgnoreHabbit(2, "STEPS_WALKED", "Ammount of steps walked", 2);
+            InsertOrIgnoreHabbit(1, "WATER_INTAKE", "Amount of water drunk", 1);
+            InsertOrIgnoreHabbit(2, "STEPS_WALKED", "Amount of steps walked", 2);
             InsertOrIgnoreHabbit(3, "STUDY", "Time spent studying", 3);
 
             // Add some habbit occurences to the database
@@ -292,6 +292,19 @@ namespace HabbitLogger.DAL
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
                 dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES ({habbitId}, {unitAmount}, '{datetime}');";
+                dbCommand.ExecuteNonQuery();
+            }
+        }
+
+        internal static void InsertHabbitOccurence(int habbitId, int unitAmount, DateTime? datetime)
+        {
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES ({habbitId}, {unitAmount}, '{datetime.ToString()}');";
                 dbCommand.ExecuteNonQuery();
             }
         }
