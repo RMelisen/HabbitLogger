@@ -65,6 +65,20 @@ namespace HabbitLogger.UI
                         }
                         break;
                     case MainMenuOption.Update:
+                        switch (SelectTable("update"))
+                        {
+                            case ViewTablesOption.Habbits:
+                                UpdateHabbit();
+                                break;
+                            case ViewTablesOption.UnitOfMeasures:
+                                UpdateUnitOfMeasure();
+                                break;
+                            case ViewTablesOption.HabbitOccurences:
+                                UpdateHabbitOccurence();
+                                break;
+                            case ViewTablesOption.Back:
+                                break;
+                        }
                         break;
                     case MainMenuOption.View:
                         switch (SelectTable("view"))
@@ -203,6 +217,7 @@ namespace HabbitLogger.UI
 
         private static void DeleteHabbit()
         {
+            AnsiConsole.Clear();
             int idToDelete = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the habbit to [{NEGATIVE_INDICATOR_COLOR}]delete[/] (0 to quit) : ");
 
             if (idToDelete == 0)
@@ -213,6 +228,7 @@ namespace HabbitLogger.UI
 
         private static void DeleteUnitOfMeasure()
         {
+            AnsiConsole.Clear();
             int idToDelete = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the unit of measure to [{NEGATIVE_INDICATOR_COLOR}]delete[/] (0 to quit) : ");
 
             if (idToDelete == 0)
@@ -223,6 +239,7 @@ namespace HabbitLogger.UI
 
         private static void DeleteHabbitOccurence()
         {
+            AnsiConsole.Clear();
             int idToDelete = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the habbit occurence to [{NEGATIVE_INDICATOR_COLOR}]delete[/] (0 to quit) : ");
 
             if (idToDelete == 0)
@@ -235,6 +252,54 @@ namespace HabbitLogger.UI
 
         #region Update in Table
 
+        private static void UpdateHabbit()
+        {
+            AnsiConsole.Clear();
+
+            int idToUpdate= AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the habbit to [{NEGATIVE_INDICATOR_COLOR}]update[/] (0 to quit) : ");
+
+            if (idToUpdate == 0)
+                return;
+
+            string name = AnsiConsole.Ask<string>($"Enter a new habbit [{NEUTRAL_INDICATOR_COLOR}]name[/] : ");
+            string description = AnsiConsole.Ask<string>($"Enter the new habbit [{NEUTRAL_INDICATOR_COLOR}]description[/] : ");
+            UnitOfMeasure unitOfMeasure = AnsiConsole.Prompt(new SelectionPrompt<UnitOfMeasure>().Title($"Select a new [{NEUTRAL_INDICATOR_COLOR}]unit of measure[/]").AddChoices(HabbitloggerDAL.GetAllUnitsOfMeasures()));
+
+            HabbitloggerDAL.UpdateHabbitById(idToUpdate, name, description, unitOfMeasure.Id);
+        }
+
+        private static void UpdateUnitOfMeasure()
+        {
+            AnsiConsole.Clear();
+            int idToUpdate = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the unit of measure to [{NEGATIVE_INDICATOR_COLOR}]update[/] (0 to quit) : ");
+
+            if (idToUpdate == 0)
+                return;
+
+            string name = AnsiConsole.Ask<string>($"Enter a new [{NEUTRAL_INDICATOR_COLOR}]unit of measure[/] : ");
+
+            HabbitloggerDAL.UpdateUnitOfMeasureById(idToUpdate, name);
+        }
+
+        private static void UpdateHabbitOccurence()
+        {
+            AnsiConsole.Clear();
+            int idToUpdate = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the habbit occurence to [{NEGATIVE_INDICATOR_COLOR}]update[/] (0 to quit) : ");
+
+            if (idToUpdate == 0)
+                return;
+
+            Habbit habbit = AnsiConsole.Prompt(new SelectionPrompt<Habbit>().Title($"Select a new [{NEUTRAL_INDICATOR_COLOR}]habbit[/]").AddChoices(HabbitloggerDAL.GetAllHabbits()));
+            int unitAmount = AnsiConsole.Ask<int>($"Enter an new [{NEUTRAL_INDICATOR_COLOR}]amount[/] of [{NEUTRAL_INDICATOR_COLOR}]{habbit.UnitOfMeasure.Name}[/] : ");
+            DateTime? datetime = GetDateFromUser();
+            while (datetime == null)
+            {
+                AnsiConsole.MarkupLine($"[{NEGATIVE_INDICATOR_COLOR}]Wrong format ![/]");
+                datetime = GetDateFromUser();
+            }
+
+            HabbitloggerDAL.UpdateHabbitOccurenceById(idToUpdate, habbit.Id, unitAmount, datetime);
+        }
 
         #endregion
 
