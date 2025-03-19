@@ -33,5 +33,11 @@ namespace HabbitLogger.Commons.Classes
                 _Name = value;
             }
         }
+
+        public UnitOfMeasure(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
     }
 }

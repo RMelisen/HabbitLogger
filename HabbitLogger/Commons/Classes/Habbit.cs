@@ -60,11 +60,12 @@ namespace HabbitLogger.Commons.Classes
             }
         }
 
-        public Habbit(int id, string name, string description, int unitOfMeasure)
+        public Habbit(int id, string name, string description, int unitOfMeasureId)
         {
             Id = id;
             Name = name;
             Description = description;
+            UnitOfMeasure = DAL.HabbitloggerDAL.GetUnitOfMeasureByID(unitOfMeasureId);
         }
     }
 }

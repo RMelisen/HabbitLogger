@@ -32,7 +32,7 @@ namespace HabbitLogger.DAL
             PopulateDbTables();
         }
 
-        #region INIT
+        #region Initialization
 
         internal static void CreateDbTables(SqliteCommand dbCommand)
         {
@@ -113,12 +113,12 @@ namespace HabbitLogger.DAL
 
         internal static void DeleteHabbit()
         {
-
+            // TODO
         }
 
         internal static void UpdateHabbit()
         {
-
+            // TODO
         }
 
         internal static Habbit? GetHabbitByID(int id)
@@ -144,7 +144,7 @@ namespace HabbitLogger.DAL
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine($"No entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     return null;
                 }
             }
@@ -176,7 +176,7 @@ namespace HabbitLogger.DAL
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine($"No entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                 }
 
                 return habbitList;
@@ -213,22 +213,70 @@ namespace HabbitLogger.DAL
 
         internal static void DeleteUnitOfMeasure()
         {
-
+            // TODO
         }
 
         internal static void UpdateUnitOfMeasure()
         {
-
+            // TODO
         }
 
-        internal static void GetUnitOfMeasureByID()
+        internal static UnitOfMeasure? GetUnitOfMeasureByID(int id)
         {
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
 
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"SELECT * FROM unitsOfMeasure WHERE Id = {id};";
+                SqliteDataReader sqlDataReader = dbCommand.ExecuteReader();
+
+                if (sqlDataReader.HasRows)
+                {
+                    sqlDataReader.Read();
+
+                    return new UnitOfMeasure(sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("Id")),
+                        sqlDataReader.GetString(sqlDataReader.GetOrdinal("Name"))
+                        );
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    return null;
+                }
+            }
         }
 
-        internal static void GetAllUnitsOfMeasures()
+        internal static List<UnitOfMeasure> GetAllUnitsOfMeasures()
         {
+            List<UnitOfMeasure> unitOfMeasureList = new List<UnitOfMeasure>();
 
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"SELECT * FROM unitsOfMeasure;";
+                SqliteDataReader sqlDataReader = dbCommand.ExecuteReader();
+
+                if (sqlDataReader.HasRows)
+                {
+                    while (sqlDataReader.Read())
+                    {
+                        unitOfMeasureList.Add(new UnitOfMeasure(sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("Id")),
+                            sqlDataReader.GetString(sqlDataReader.GetOrdinal("Name"))
+                            ));
+                    }
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                }
+
+                return unitOfMeasureList;
+            }
         }
 
         #endregion
@@ -263,22 +311,74 @@ namespace HabbitLogger.DAL
 
         internal static void DeleteHabbitOccurence()
         {
-
+            // TODO
         }
 
         internal static void UpdateHabbitOccurence()
         {
-
+            // TODO
         }
 
-        internal static void GetHabbitOccurenceByID()
+        internal static HabbitOccurence? GetHabbitOccurenceByID(int id)
         {
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
 
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"SELECT * FROM habbitOccurences WHERE Id = {id};";
+                SqliteDataReader sqlDataReader = dbCommand.ExecuteReader();
+
+                if (sqlDataReader.HasRows)
+                {
+                    sqlDataReader.Read();
+
+                    return new HabbitOccurence(sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("Id")),
+                            sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("HabbitID")),
+                            sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("UnitAmount")),
+                            sqlDataReader.GetString(sqlDataReader.GetOrdinal("Datetime"))
+                        );
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    return null;
+                }
+            }
         }
 
-        internal static void GetAllHabbitOccurences()
+        internal static List<HabbitOccurence> GetAllHabbitOccurences()
         {
+            List<HabbitOccurence> habbitOccurencesList = new List<HabbitOccurence>();
 
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"SELECT * FROM habbitOccurences;";
+                SqliteDataReader sqlDataReader = dbCommand.ExecuteReader();
+
+                if (sqlDataReader.HasRows)
+                {
+                    while (sqlDataReader.Read())
+                    {
+                        habbitOccurencesList.Add(new HabbitOccurence(sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("Id")),
+                            sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("HabbitID")),
+                            sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("UnitAmount")),
+                            sqlDataReader.GetString(sqlDataReader.GetOrdinal("Datetime"))
+                            ));
+                    }
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                }
+
+                return habbitOccurencesList;
+            }
         }
 
         #endregion

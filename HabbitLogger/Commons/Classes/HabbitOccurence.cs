@@ -59,5 +59,20 @@ namespace HabbitLogger.Commons.Classes
                 _Datetime = value;
             }
         }
+
+        public HabbitOccurence(int id, int habbitId, int unitAmount, string datetime)
+        {
+            Id = id;
+            Habbit = DAL.HabbitloggerDAL.GetHabbitByID(id);
+            UnitAmount = unitAmount;
+            Datetime = DateTime.Parse(datetime);            
+        }
+        public HabbitOccurence(int id, int habbitId, int unitAmount, DateTime datetime)
+        {
+            Id = id;
+            Habbit = DAL.HabbitloggerDAL.GetHabbitByID(id);
+            UnitAmount = unitAmount;
+            Datetime = datetime;
+        }
     }
 }
