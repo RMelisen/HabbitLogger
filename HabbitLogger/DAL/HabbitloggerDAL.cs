@@ -130,9 +130,17 @@ namespace HabbitLogger.DAL
             }
         }
 
-        internal static void UpdateHabbit()
+        internal static void UpdateHabbitById(int id, string name, string description, int unitOfMeasureId)
         {
-            // TODO
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"UPDATE habbits SET Name = '{name}', Description = '{description}', UnitOfMeasureID = {unitOfMeasureId} WHERE Id = {id};";
+                dbCommand.ExecuteNonQuery();
+            }
         }
 
         internal static Habbit? GetHabbitByID(int id)
@@ -248,9 +256,17 @@ namespace HabbitLogger.DAL
             }
         }
 
-        internal static void UpdateUnitOfMeasure()
+        internal static void UpdateUnitOfMeasureById(int id, string name)
         {
-            // TODO
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"UPDATE unitsOfMeasure SET Name = '{name}' WHERE Id = {id};";
+                dbCommand.ExecuteNonQuery();
+            }
         }
 
         internal static UnitOfMeasure? GetUnitOfMeasureByID(int id)
@@ -377,9 +393,17 @@ namespace HabbitLogger.DAL
             }
         }
 
-        internal static void UpdateHabbitOccurence()
+        internal static void UpdateHabbitOccurenceById(int id, int habbitId, int unitAmount, DateTime? datetime)
         {
-            // TODO
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"UPDATE habbitOccurences SET HabbitID = {habbitId}, UnitAmount = {unitAmount}, Datetime = '{datetime.ToString()}' WHERE Id = {id};";
+                dbCommand.ExecuteNonQuery();
+            }
         }
 
         internal static HabbitOccurence? GetHabbitOccurenceByID(int id)
