@@ -111,9 +111,23 @@ namespace HabbitLogger.DAL
             }
         }
 
-        internal static void DeleteHabbit()
+        internal static void DeleteHabbitById(int id)
         {
-            // TODO
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"DELETE FROM habbits WHERE Id = '{id}';";
+
+                if(dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
+                {
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry with id [{MainMenu.NEUTRAL_INDICATOR_COLOR}]{id}[/] [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
+                }
+            }
         }
 
         internal static void UpdateHabbit()
@@ -145,6 +159,8 @@ namespace HabbitLogger.DAL
                 else
                 {
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
                     return null;
                 }
             }
@@ -177,6 +193,8 @@ namespace HabbitLogger.DAL
                 else
                 {
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
                 }
 
                 return habbitList;
@@ -211,9 +229,23 @@ namespace HabbitLogger.DAL
             }
         }
 
-        internal static void DeleteUnitOfMeasure()
+        internal static void DeleteUnitOfMeasureById(int id)
         {
-            // TODO
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"DELETE FROM unitsOfMeasure WHERE Id = '{id}';";
+
+                if (dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
+                {
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry with id [{MainMenu.NEUTRAL_INDICATOR_COLOR}]{id}[/] [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
+                }
+            }
         }
 
         internal static void UpdateUnitOfMeasure()
@@ -243,6 +275,8 @@ namespace HabbitLogger.DAL
                 else
                 {
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
                     return null;
                 }
             }
@@ -273,6 +307,8 @@ namespace HabbitLogger.DAL
                 else
                 {
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
                 }
 
                 return unitOfMeasureList;
@@ -322,9 +358,23 @@ namespace HabbitLogger.DAL
             }
         }
 
-        internal static void DeleteHabbitOccurence()
+        internal static void DeleteHabbitOccurenceById(int id)
         {
-            // TODO
+            using (SqliteConnection dbConnection = new SqliteConnection(connectionString))
+            {
+                dbConnection.Open();
+
+                SqliteCommand dbCommand = dbConnection.CreateCommand();
+
+                dbCommand.CommandText = $@"DELETE FROM habbitOccurences WHERE Id = '{id}';";
+
+                if (dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
+                {
+                    AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry with id [{MainMenu.NEUTRAL_INDICATOR_COLOR}]{id}[/] [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
+                }
+            }
         }
 
         internal static void UpdateHabbitOccurence()
@@ -356,6 +406,8 @@ namespace HabbitLogger.DAL
                 else
                 {
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
                     return null;
                 }
             }
@@ -388,6 +440,8 @@ namespace HabbitLogger.DAL
                 else
                 {
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
+                    AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
+                    Console.ReadKey();
                 }
 
                 return habbitOccurencesList;

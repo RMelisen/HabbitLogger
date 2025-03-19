@@ -33,7 +33,7 @@ namespace HabbitLogger.UI
                 switch (mainMenuChoice)
                 {
                     case MainMenuOption.Insert:
-                        switch (SelectTable())
+                        switch (SelectTable("insert"))
                         {
                             case ViewTablesOption.Habbits:
                                 InsertHabbit();
@@ -49,13 +49,16 @@ namespace HabbitLogger.UI
                         }
                         break;
                     case MainMenuOption.Delete:
-                        switch (SelectTable())
+                        switch (SelectTable("delete"))
                         {
                             case ViewTablesOption.Habbits:
+                                DeleteHabbit();
                                 break;
                             case ViewTablesOption.UnitOfMeasures:
+                                DeleteUnitOfMeasure();
                                 break;
                             case ViewTablesOption.HabbitOccurences:
+                                DeleteHabbitOccurence();
                                 break;
                             case ViewTablesOption.Back:
                                 break;
@@ -64,7 +67,7 @@ namespace HabbitLogger.UI
                     case MainMenuOption.Update:
                         break;
                     case MainMenuOption.View:
-                        switch (SelectTable())
+                        switch (SelectTable("view"))
                         {
                             case ViewTablesOption.Habbits:
                                 ViewHabbits();
@@ -108,7 +111,7 @@ namespace HabbitLogger.UI
 
             AnsiConsole.MarkupLine($"[{NEUTRAL_INDICATOR_COLOR} Bold]Habbits :[/]");
             AnsiConsole.Write(habbitsTable);
-            AnsiConsole.MarkupLine($"Press any key to [{NEUTRAL_INDICATOR_COLOR}]continue[/]");
+            AnsiConsole.MarkupLine($"Press any key to [{NEUTRAL_INDICATOR_COLOR}]continue[/]...");
             Console.ReadKey();
         }
 
@@ -128,7 +131,7 @@ namespace HabbitLogger.UI
 
             AnsiConsole.MarkupLine($"[{NEUTRAL_INDICATOR_COLOR} Bold]Units of Measure :[/]");
             AnsiConsole.Write(unitsOfMeasureTable);
-            AnsiConsole.MarkupLine($"Press any key to [{NEUTRAL_INDICATOR_COLOR}]continue[/]");
+            AnsiConsole.MarkupLine($"Press any key to [{NEUTRAL_INDICATOR_COLOR}]continue[/]...");
             Console.ReadKey();
         }
 
@@ -150,7 +153,7 @@ namespace HabbitLogger.UI
 
             AnsiConsole.MarkupLine($"[{NEUTRAL_INDICATOR_COLOR} Bold]Habbit Occurences :[/]");
             AnsiConsole.Write(habbitOccurencesTable);
-            AnsiConsole.MarkupLine($"Press any key to [{NEUTRAL_INDICATOR_COLOR}]continue[/]");
+            AnsiConsole.MarkupLine($"Press any key to [{NEUTRAL_INDICATOR_COLOR}]continue[/]...");
             Console.ReadKey();
         }
 
@@ -196,9 +199,48 @@ namespace HabbitLogger.UI
 
         #endregion
 
+        #region Delete in Table
+
+        private static void DeleteHabbit()
+        {
+            int idToDelete = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the habbit to [{NEGATIVE_INDICATOR_COLOR}]delete[/] (0 to quit) : ");
+
+            if (idToDelete == 0)
+                return;
+
+            HabbitloggerDAL.DeleteHabbitById(idToDelete);
+        }
+
+        private static void DeleteUnitOfMeasure()
+        {
+            int idToDelete = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the unit of measure to [{NEGATIVE_INDICATOR_COLOR}]delete[/] (0 to quit) : ");
+
+            if (idToDelete == 0)
+                return;
+
+            HabbitloggerDAL.DeleteUnitOfMeasureById(idToDelete);
+        }
+
+        private static void DeleteHabbitOccurence()
+        {
+            int idToDelete = AnsiConsole.Ask<int>($"Enter the [{NEUTRAL_INDICATOR_COLOR}]id[/] of the habbit occurence to [{NEGATIVE_INDICATOR_COLOR}]delete[/] (0 to quit) : ");
+
+            if (idToDelete == 0)
+                return;
+
+            HabbitloggerDAL.DeleteHabbitOccurenceById(idToDelete);
+        }
+
+        #endregion
+
+        #region Update in Table
+
+
+        #endregion
+
         #region Utils
 
-        internal static ViewTablesOption SelectTable()
+        internal static ViewTablesOption SelectTable(string operation)
         {
             string viewTablesOptionChoiceString;
 
@@ -211,7 +253,7 @@ namespace HabbitLogger.UI
             // Use the string[] to display the description attribute of the enum
             // I do this because I want to use the description instead of the raw value in my Spectre.Console.Prompt()
             AnsiConsole.Clear();
-            viewTablesOptionChoiceString = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"What do you want to [{NEUTRAL_INDICATOR_COLOR}]view[/] ?").AddChoices(options));
+            viewTablesOptionChoiceString = AnsiConsole.Prompt(new SelectionPrompt<string>().Title($"What do you want to [{NEUTRAL_INDICATOR_COLOR}]{operation}[/] ?").AddChoices(options));
 
             // Convert the chosen option back to an enum value
             return Enum.GetValues(typeof(ViewTablesOption))
