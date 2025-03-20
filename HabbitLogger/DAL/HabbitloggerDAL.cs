@@ -50,7 +50,7 @@ namespace HabbitLogger.DAL
                     Name TEXT,
                     Description TEXT,
                     UnitOfMeasureID INT,
-                    FOREIGN KEY (UnitOfMeasureID) REFERENCES unitsOfMeasure(Id)
+                    FOREIGN KEY (UnitOfMeasureID) REFERENCES unitsOfMeasure(Id) ON DELETE CASCADE
                     );";
             dbCommand.ExecuteNonQuery();
 
@@ -60,7 +60,7 @@ namespace HabbitLogger.DAL
                     HabbitID INT,
                     UnitAmount INTEGER,
                     Datetime DATETIME,
-                    FOREIGN KEY (HabbitID) REFERENCES habbits(Id)
+                    FOREIGN KEY (HabbitID) REFERENCES habbits(Id) ON DELETE CASCADE
                     );";
             dbCommand.ExecuteNonQuery();
         }
@@ -94,7 +94,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO habbits (Name, Description, UnitOfMeasureID) VALUES ('@name', '@description', @unitOfMeasureId);";
+                dbCommand.CommandText = $@"INSERT INTO habbits (Name, Description, UnitOfMeasureID) VALUES (@name, @description, @unitOfMeasureId);";
                 dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.Parameters.AddWithValue("@description", description);
                 dbCommand.Parameters.AddWithValue("@unitOfMeasureId", unitOfMeasureId);
@@ -110,7 +110,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbits (Id, Name, Description, UnitOfMeasureID) VALUES (@id, '@name', '@description', @unitOfMeasureId);";
+                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbits (Id, Name, Description, UnitOfMeasureID) VALUES (@id, @name, @description, @unitOfMeasureId);";
                 dbCommand.Parameters.AddWithValue("@id", id);
                 dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.Parameters.AddWithValue("@description", description);
@@ -135,6 +135,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry with id [{MainMenu.NEUTRAL_INDICATOR_COLOR}]{id}[/] [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                 }
             }
         }
@@ -147,7 +148,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"UPDATE habbits SET Name = @name, Description = @description', UnitOfMeasureID = @unitOfMeasureId WHERE Id = @id;";
+                dbCommand.CommandText = $@"UPDATE habbits SET Name = @name, Description = @description, UnitOfMeasureID = @unitOfMeasureId WHERE Id = @id;";
                 dbCommand.Parameters.AddWithValue("@id", id);
                 dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.Parameters.AddWithValue("@description", description);
@@ -183,6 +184,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                     return null;
                 }
             }
@@ -217,6 +219,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                 }
 
                 return habbitList;
@@ -234,7 +237,7 @@ namespace HabbitLogger.DAL
                 dbConnection.Open();
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO unitsOfMeasure (Name) VALUES ('@name');";
+                dbCommand.CommandText = $@"INSERT INTO unitsOfMeasure (Name) VALUES (@name);";
                 dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.ExecuteNonQuery();
             }
@@ -247,7 +250,7 @@ namespace HabbitLogger.DAL
                 dbConnection.Open();
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT OR IGNORE INTO unitsOfMeasure (Id, Name) VALUES (@id, '@name');";
+                dbCommand.CommandText = $@"INSERT OR IGNORE INTO unitsOfMeasure (Id, Name) VALUES (@id, @name);";
                 dbCommand.Parameters.AddWithValue("@id", id);
                 dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.ExecuteNonQuery();
@@ -262,7 +265,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"DELETE FROM unitsOfMeasure WHERE Id = '@id';";
+                dbCommand.CommandText = $@"DELETE FROM unitsOfMeasure WHERE Id = @id;";
                 dbCommand.Parameters.AddWithValue("@id", id);
 
                 if (dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
@@ -270,6 +273,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry with id [{MainMenu.NEUTRAL_INDICATOR_COLOR}]{id}[/] [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                 }
             }
         }
@@ -282,7 +286,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"UPDATE unitsOfMeasure SET Name = '@name' WHERE Id = @id;";
+                dbCommand.CommandText = $@"UPDATE unitsOfMeasure SET Name = @name WHERE Id = @id;";
                 dbCommand.Parameters.AddWithValue("@id", id);
                 dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.ExecuteNonQuery();
@@ -314,6 +318,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                     return null;
                 }
             }
@@ -346,6 +351,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[UnitOfMeasure]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                 }
 
                 return unitOfMeasureList;
@@ -364,7 +370,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES (@habbitId, @unitAmount, '@datetime');";
+                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES (@habbitId, @unitAmount, @datetime);";
                 dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
                 dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
                 dbCommand.Parameters.AddWithValue("@datetime", datetime);
@@ -380,7 +386,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES (@habbitId, @unitAmount, '@datetime');";
+                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES (@habbitId, @unitAmount, @datetime);";
                 dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
                 dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
                 dbCommand.Parameters.AddWithValue("@datetime", datetime);
@@ -396,7 +402,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbitOccurences (Id, HabbitID, UnitAmount, Datetime) VALUES (@id, @habbitId, @unitAmount, '@datetime');";
+                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbitOccurences (Id, HabbitID, UnitAmount, Datetime) VALUES (@id, @habbitId, @unitAmount, @datetime);";
                 dbCommand.Parameters.AddWithValue("@id", id);
                 dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
                 dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
@@ -413,7 +419,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"DELETE FROM habbitOccurences WHERE Id = '@id';";
+                dbCommand.CommandText = $@"DELETE FROM habbitOccurences WHERE Id = @id;";
                 dbCommand.Parameters.AddWithValue("@id", id);
 
                 if (dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
@@ -421,6 +427,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry with id [{MainMenu.NEUTRAL_INDICATOR_COLOR}]{id}[/] [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                 }
             }
         }
@@ -433,7 +440,7 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"UPDATE habbitOccurences SET HabbitID = @habbitId, UnitAmount = @unitAmount, Datetime = '@datetime' WHERE Id = @id;";
+                dbCommand.CommandText = $@"UPDATE habbitOccurences SET HabbitID = @habbitId, UnitAmount = @unitAmount, Datetime = @datetime WHERE Id = @id;";
                 dbCommand.Parameters.AddWithValue("@id", id); 
                 dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
                 dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
@@ -469,6 +476,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                     return null;
                 }
             }
@@ -503,6 +511,7 @@ namespace HabbitLogger.DAL
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[HabbitOccurence]][/] entry [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
                     Console.ReadKey();
+                    AnsiConsole.Clear();
                 }
 
                 return habbitOccurencesList;
