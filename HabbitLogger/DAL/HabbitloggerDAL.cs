@@ -3,6 +3,7 @@ using HabbitLogger.UI;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
 using SQLitePCL;
+using System;
 using System.Data.Common;
 using System.Reflection.PortableExecutable;
 using System.Xml.Linq;
@@ -93,7 +94,10 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO habbits (Name, Description, UnitOfMeasureID) VALUES ('{name}', '{description}', {unitOfMeasureId});";
+                dbCommand.CommandText = $@"INSERT INTO habbits (Name, Description, UnitOfMeasureID) VALUES ('@name', '@description', @unitOfMeasureId);";
+                dbCommand.Parameters.AddWithValue("@name", name);
+                dbCommand.Parameters.AddWithValue("@description", description);
+                dbCommand.Parameters.AddWithValue("@unitOfMeasureId", unitOfMeasureId);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -106,7 +110,11 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbits (Id, Name, Description, UnitOfMeasureID) VALUES ({id}, '{name}', '{description}', {unitOfMeasureId});";
+                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbits (Id, Name, Description, UnitOfMeasureID) VALUES (@id, '@name', '@description', @unitOfMeasureId);";
+                dbCommand.Parameters.AddWithValue("@id", id);
+                dbCommand.Parameters.AddWithValue("@name", name);
+                dbCommand.Parameters.AddWithValue("@description", description);
+                dbCommand.Parameters.AddWithValue("@unitOfMeasureId", unitOfMeasureId);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -119,9 +127,10 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"DELETE FROM habbits WHERE Id = '{id}';";
+                dbCommand.CommandText = $@"DELETE FROM habbits WHERE Id = @id;";
+                dbCommand.Parameters.AddWithValue("@id", id);
 
-                if(dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
+                if (dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
                 {
                     AnsiConsole.MarkupLine($"No [{MainMenu.NEUTRAL_INDICATOR_COLOR}][[Habbit]][/] entry with id [{MainMenu.NEUTRAL_INDICATOR_COLOR}]{id}[/] [{MainMenu.NEGATIVE_INDICATOR_COLOR}]found[/] !");
                     AnsiConsole.MarkupLine($"Press any key to [{MainMenu.NEUTRAL_INDICATOR_COLOR}]continue[/]...");
@@ -138,7 +147,11 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"UPDATE habbits SET Name = '{name}', Description = '{description}', UnitOfMeasureID = {unitOfMeasureId} WHERE Id = {id};";
+                dbCommand.CommandText = $@"UPDATE habbits SET Name = @name, Description = @description', UnitOfMeasureID = @unitOfMeasureId WHERE Id = @id;";
+                dbCommand.Parameters.AddWithValue("@id", id);
+                dbCommand.Parameters.AddWithValue("@name", name);
+                dbCommand.Parameters.AddWithValue("@description", description);
+                dbCommand.Parameters.AddWithValue("@unitOfMeasureId", unitOfMeasureId);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -151,7 +164,8 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"SELECT * FROM habbits WHERE Id = {id};";
+                dbCommand.CommandText = $@"SELECT * FROM habbits WHERE Id = @id;";
+                dbCommand.Parameters.AddWithValue("@id", id);
                 SqliteDataReader sqlDataReader = dbCommand.ExecuteReader();
 
                 if (sqlDataReader.HasRows)
@@ -220,7 +234,8 @@ namespace HabbitLogger.DAL
                 dbConnection.Open();
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO unitsOfMeasure (Name) VALUES ('{name}');";
+                dbCommand.CommandText = $@"INSERT INTO unitsOfMeasure (Name) VALUES ('@name');";
+                dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -232,7 +247,9 @@ namespace HabbitLogger.DAL
                 dbConnection.Open();
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT OR IGNORE INTO unitsOfMeasure (Id, Name) VALUES ({id}, '{name}');";
+                dbCommand.CommandText = $@"INSERT OR IGNORE INTO unitsOfMeasure (Id, Name) VALUES (@id, '@name');";
+                dbCommand.Parameters.AddWithValue("@id", id);
+                dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -245,7 +262,8 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"DELETE FROM unitsOfMeasure WHERE Id = '{id}';";
+                dbCommand.CommandText = $@"DELETE FROM unitsOfMeasure WHERE Id = '@id';";
+                dbCommand.Parameters.AddWithValue("@id", id);
 
                 if (dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
                 {
@@ -264,7 +282,9 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"UPDATE unitsOfMeasure SET Name = '{name}' WHERE Id = {id};";
+                dbCommand.CommandText = $@"UPDATE unitsOfMeasure SET Name = '@name' WHERE Id = @id;";
+                dbCommand.Parameters.AddWithValue("@id", id);
+                dbCommand.Parameters.AddWithValue("@name", name);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -277,7 +297,8 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"SELECT * FROM unitsOfMeasure WHERE Id = {id};";
+                dbCommand.CommandText = $@"SELECT * FROM unitsOfMeasure WHERE Id = @id;";
+                dbCommand.Parameters.AddWithValue("@id", id);
                 SqliteDataReader sqlDataReader = dbCommand.ExecuteReader();
 
                 if (sqlDataReader.HasRows)
@@ -343,7 +364,10 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES ({habbitId}, {unitAmount}, '{datetime}');";
+                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES (@habbitId, @unitAmount, '@datetime');";
+                dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
+                dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
+                dbCommand.Parameters.AddWithValue("@datetime", datetime);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -356,7 +380,10 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES ({habbitId}, {unitAmount}, '{datetime.ToString()}');";
+                dbCommand.CommandText = $@"INSERT INTO habbitOccurences (HabbitID, UnitAmount, Datetime) VALUES (@habbitId, @unitAmount, '@datetime');";
+                dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
+                dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
+                dbCommand.Parameters.AddWithValue("@datetime", datetime);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -369,7 +396,11 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbitOccurences (Id, HabbitID, UnitAmount, Datetime) VALUES ({id}, {habbitId}, {unitAmount}, '{datetime}');";
+                dbCommand.CommandText = $@"INSERT OR IGNORE INTO habbitOccurences (Id, HabbitID, UnitAmount, Datetime) VALUES (@id, @habbitId, @unitAmount, '@datetime');";
+                dbCommand.Parameters.AddWithValue("@id", id);
+                dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
+                dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
+                dbCommand.Parameters.AddWithValue("@datetime", datetime);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -382,7 +413,8 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"DELETE FROM habbitOccurences WHERE Id = '{id}';";
+                dbCommand.CommandText = $@"DELETE FROM habbitOccurences WHERE Id = '@id';";
+                dbCommand.Parameters.AddWithValue("@id", id);
 
                 if (dbCommand.ExecuteNonQuery() == 0)    // Return value is Number of affected rows
                 {
@@ -401,7 +433,11 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"UPDATE habbitOccurences SET HabbitID = {habbitId}, UnitAmount = {unitAmount}, Datetime = '{datetime.ToString()}' WHERE Id = {id};";
+                dbCommand.CommandText = $@"UPDATE habbitOccurences SET HabbitID = @habbitId, UnitAmount = @unitAmount, Datetime = '@datetime' WHERE Id = @id;";
+                dbCommand.Parameters.AddWithValue("@id", id); 
+                dbCommand.Parameters.AddWithValue("@habbitId", habbitId);
+                dbCommand.Parameters.AddWithValue("@unitAmount", unitAmount);
+                dbCommand.Parameters.AddWithValue("@datetime", datetime);
                 dbCommand.ExecuteNonQuery();
             }
         }
@@ -414,7 +450,8 @@ namespace HabbitLogger.DAL
 
                 SqliteCommand dbCommand = dbConnection.CreateCommand();
 
-                dbCommand.CommandText = $@"SELECT * FROM habbitOccurences WHERE Id = {id};";
+                dbCommand.CommandText = $@"SELECT * FROM habbitOccurences WHERE Id = @id;";
+                dbCommand.Parameters.AddWithValue("@id", id);
                 SqliteDataReader sqlDataReader = dbCommand.ExecuteReader();
 
                 if (sqlDataReader.HasRows)
